@@ -8,7 +8,7 @@
  *   token is AES-GCM encrypted with the PIN and kept in this browser only.
  *   Without that token nobody can change the live site, whatever they type here.
  */
-const CFG = { owner: 'iAdityaD', repo: 'Resume', branch: 'main', path: 'resume-data.js' };
+const CFG = { owner: 'iAdityaD', repo: 'Resume', branches: ['gh-pages', 'main'], path: 'resume-data.js' };
 const PIN = { salt: 'c80f823e2a7ddd9c0d3fc39ca2b801b2', hash: '665e20776cd5a9e58c9cda5608a2d716e3bb3e6456261b16e3ed11728596eedb', iter: 300000 };
 const API = `https://api.github.com/repos/${CFG.owner}/${CFG.repo}`;
 const HEADER = '/* Resume content. Edit it from the owner page (edit.html) - or by hand, keeping valid JSON after the equals sign. */\n';
@@ -53,8 +53,8 @@ async function gh(path, opts) {
   if (!r.ok) { const err = new Error((body && body.message) || ('GitHub error ' + r.status)); err.status = r.status; throw err; }
   return body;
 }
-async function fetchFile() {
-  const f = await gh(`/contents/${CFG.path}?ref=${CFG.branch}`);
+async function fetchFile(branch) {
+  const f = await gh(`/contents/${CFG.path}?ref=${branch || CFG.branches[0]}`);
   sha = f.sha;
   const text = dec.decode(unb64(f.content));
   try { return JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1)); } catch (e) { return null; }
@@ -190,20 +190,18 @@ $('#save').addEventListener('click', async () => {
   const btn = $('#save'), data = collect();
   if (!data.name) { status('Name cannot be empty.', 'bad'); return; }
   btn.disabled = true; status('Publishing…');
-  const body = () => JSON.stringify({
-    message: 'Update resume content',
-    branch: CFG.branch, sha,
-    content: b64(enc.encode(HEADER + 'window.RESUME = ' + JSON.stringify(data, null, 2) + ';\n'))
-  });
+  const content = b64(enc.encode(HEADER + 'window.RESUME = ' + JSON.stringify(data, null, 2) + ';\n'));
   try {
-    let res;
-    try { res = await gh('/contents/' + CFG.path, { method: 'PUT', body: body() }); }
-    catch (ex) {
-      if (ex.status !== 409 && ex.status !== 422) throw ex;
-      await fetchFile(); // someone else changed the file: refresh its version and retry once
-      res = await gh('/contents/' + CFG.path, { method: 'PUT', body: body() });
+    // The site is served from the first branch; the others are kept in step with it.
+    let done = 0;
+    for (const branch of CFG.branches) {
+      try { await fetchFile(branch); }
+      catch (ex) { if (ex.status === 404 && done + CFG.branches.length > 1) continue; throw ex; }
+      await gh('/contents/' + CFG.path, { method: 'PUT', body: JSON.stringify({ message: 'Update resume content', branch, sha, content }) });
+      done++;
     }
-    sha = res.content.sha; dirty = false;
+    if (!done) throw new Error('resume-data.js was not found in the repo.');
+    dirty = false;
     try { localStorage.setItem('rq_draft', JSON.stringify({ at: Date.now(), data })); } catch (ex) { /* optional */ }
     status('Saved ✔ Live for everyone in about a minute.', 'ok');
   } catch (ex) {
