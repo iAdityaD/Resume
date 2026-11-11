@@ -1,6 +1,11 @@
 (() => {
 'use strict';
 
+// The owner sees their just-saved edits straight away, before the site redeploys.
+try {
+  const d = JSON.parse(localStorage.getItem("rq_draft") || "null");
+  if (d && Date.now() - d.at < 10 * 60 * 1000) window.RESUME = d.data; else localStorage.removeItem("rq_draft");
+} catch (e) { /* storage is optional */ }
 const R = window.RESUME || {};
 const $ = s => document.querySelector(s);
 const T = 16, MW = 40, MH = 28;

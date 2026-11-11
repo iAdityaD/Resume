@@ -107,3 +107,5 @@ a { color: #1f5fb0; word-break: break-all; }
   #plainBody h1, #plainBody h2, #plainBody h3 { font-family: Arial, sans-serif; }
   #plainBody h2 { background: none; color: #000; border-bottom: 1px solid #000; padding: 0 0 2px; }
 }
+.owner { font-size: 18px; color: #6b5a43; text-decoration: none; }
+.owner:hover { text-decoration: underline; }

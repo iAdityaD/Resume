@@ -38,3 +38,14 @@ live at `https://iadityad.github.io/Resume/`.
 - `style.css` – pixel UI, touch controls, print styles
 - `game.js` – world generation, sprites, input, rendering
 - `resume-data.js` – your resume content
+
+## Owner editor
+
+`edit.html` (the "owner login" link on the title screen) is a PIN-locked form for
+editing the resume without touching code. On first use per device it asks for a
+GitHub fine-grained token (this repo only, Contents: Read and write), which is
+stored encrypted with the PIN in that browser. Saving commits `resume-data.js`
+and the live site updates about a minute later.
+
+The PIN keeps casual visitors out of the form; the token is what actually
+protects the site, since nobody can publish without it.

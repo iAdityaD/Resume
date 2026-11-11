@@ -37,6 +37,7 @@
     <p class="tag" id="tTag"></p>
     <button class="btn big blink" id="btnStart">▶ PRESS START</button>
     <button class="btn" id="btnSkip">SKIP TO PLAIN RESUME</button>
+    <a class="owner" href="edit.html">🔒 owner login</a>
   </div>
 </div>
 
@@ -57,7 +58,7 @@
 </main>
 
 <noscript><p style="color:#fff;padding:2rem;font-family:monospace">This resume is a small game and needs JavaScript.</p></noscript>
-<script src="resume-data.js"></script>
+<script>document.write('<script src="resume-data.js?v=' + Date.now() + '"><\/script>');</script>
 <script src="game.js"></script>
 </body>
 </html>
