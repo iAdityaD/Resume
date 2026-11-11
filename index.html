@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Resume Quest</title>
+<meta name="description" content="A playable 2D pixel-art resume. Explore the village to discover experience, projects and skills.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="game" aria-label="Pixel village game world"></canvas>
+<canvas id="labels" aria-hidden="true"></canvas>
+
+<div id="hud" hidden>
+  <div class="chip" id="score">QUEST 0/6 · GEMS 0/0</div>
+  <div class="hud-btns">
+    <button class="btn small" id="btnPlain">RESUME</button>
+    <button class="btn small" id="btnSound" aria-label="Toggle sound">SFX ON</button>
+  </div>
+</div>
+<div id="hint" hidden>WASD / ARROWS to move · E to interact</div>
+<div id="toast" hidden></div>
+
+<div id="touch" hidden>
+  <div id="pad"><div id="nub"></div></div>
+  <button id="btnA" aria-label="Interact">A</button>
+</div>
+
+<div id="title" class="screen">
+  <div class="win title-win">
+    <p class="kicker">RESUME QUEST</p>
+    <h1 id="tName"></h1>
+    <p class="role" id="tRole"></p>
+    <p class="tag" id="tTag"></p>
+    <button class="btn big blink" id="btnStart">▶ PRESS START</button>
+    <button class="btn" id="btnSkip">SKIP TO PLAIN RESUME</button>
+  </div>
+</div>
+
+<div id="panel" class="screen" hidden>
+  <div class="win panel-win" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+    <div class="win-title" id="pTitle"></div>
+    <div class="win-body" id="pBody"></div>
+    <button class="btn" id="btnClose">CLOSE</button>
+  </div>
+</div>
+
+<main id="plain" hidden>
+  <div class="plain-bar">
+    <button class="btn small" id="btnBack">◀ BACK TO GAME</button>
+    <button class="btn small" id="btnPrint">PRINT / PDF</button>
+  </div>
+  <article id="plainBody"></article>
+</main>
+
+<noscript><p style="color:#fff;padding:2rem;font-family:monospace">This resume is a small game and needs JavaScript.</p></noscript>
+<script src="resume-data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
